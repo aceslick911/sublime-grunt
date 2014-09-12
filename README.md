@@ -1,7 +1,20 @@
 sublime-grunt
 =============
 
+Originally forked from https://github.com/tvooo/sublime-grunt with a dirty hack added to allow you to specify a command to run.
+
+You can now key bind to a command using the following. 
+
+```
+[
+	{"keys": ["ctrl+b"], "command": "grunt", "args": {"command" : "default"}}
+] 
+```
+This is moderately dirty because if you use muliple grunt files it will running the same command for each file. But for most users who only use one grunt file this is perfect.
+
 A Grunt task runner for Sublime Text
+
+
 
 ![Screencast of sublime-grunt](screencast.gif)
 
