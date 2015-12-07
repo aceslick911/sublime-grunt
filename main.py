@@ -3,17 +3,17 @@ import sublime_plugin
 import os
 import subprocess
 import json
+import pprint
 from hashlib import sha1 
 
 package_name = "Grunt"
 package_url = "https://github.com/tvooo/sublime-grunt"
 cache_file_name = ".sublime-grunt.cache"
 
-
 class GruntRunner(object):
-    def __init__(self, window):
+    def __init__(self, window, command):
         self.window = window
-        self.list_gruntfiles()
+        self.list_gruntfiles(command)
 
     def list_tasks(self):
         try:
@@ -65,7 +65,7 @@ class GruntRunner(object):
 
         raise TypeError("Sha1 from grunt expose ({0}) is not equal to calculated ({1})".format(data[self.chosen_gruntfile]["sha1"], filesha1))
 
-    def list_gruntfiles(self):
+    def list_gruntfiles(self, command):
         # Load gruntfile paths from config
         self.folders = get_grunt_file_paths()
         self.grunt_files = []
@@ -80,20 +80,28 @@ class GruntRunner(object):
 
         if len(self.grunt_files) > 0:
             if len(self.grunt_files) == 1:
-                self.choose_file(0)
+                self.choose_file(0, command)
             else:
                 self.window.show_quick_panel(self.grunt_files, self.choose_file)
         else:
             sublime.error_message("Gruntfile.js or Gruntfile.coffee not found!")
 
-    def choose_file(self, file):
+    def choose_file(self, file, command):
         self.wd = os.path.dirname(self.grunt_files[file])
         self.chosen_gruntfile = self.grunt_files[file]
 
         self.tasks = self.list_tasks()
+
+		if command != "" : 
+            for task_id, task in enumerate(self.tasks):
+                if (task[0] == command):
+                    self.on_done(task_id)
+        else :
         if self.tasks is not None:
+	      sublime.set_timeout(lambda:  self.window.show_quick_panel(self.tasks, self.on_done), 1)
+       if self.tasks is not None:
             #fix quick panel unavailable
-            sublime.set_timeout(lambda:  self.window.show_quick_panel(self.tasks, self.on_done), 1)
+            sublime.set_timeout(lambda:  self.window.show_quick_panel(self.tasks, self.on_done), 1)				 
 
     def on_done(self, task):
         if task > -1:
@@ -104,7 +112,7 @@ class GruntRunner(object):
 
 def hashfile(filename):
     with open(filename, mode='rb') as f:
-        filehash = sha1()
+        filehash = sha1() 
         content = f.read();
         filehash.update(str("blob " + str(len(content)) + "\0").encode('UTF-8'))
         filehash.update(content)
@@ -144,9 +152,8 @@ def get_env_with_exec_args_path():
 
 
 class GruntCommand(sublime_plugin.WindowCommand):
-    def run(self):
-        GruntRunner(self.window)
-
+    def run(self, command):
+        GruntRunner(self.window, command)
 
 class GruntKillCommand(sublime_plugin.WindowCommand):
     def run(self):

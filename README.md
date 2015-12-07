@@ -1,15 +1,29 @@
 sublime-grunt
 =============
 
+Originally forked from https://github.com/tvooo/sublime-grunt with a dirty hack added to allow you to specify a command to run.
+
+You can now key bind to a command using the following. 
+
+```
+[
+	{"keys": ["ctrl+b"], "command": "grunt", "args": {"command" : "default"}}
+] 
+```
+This is moderately dirty because if you use muliple grunt files it will running the same command for each file. But for most users who only use one grunt file this is perfect.
+
 A Grunt task runner for Sublime Text
+
+
 
 ![Screencast of sublime-grunt](screencast.gif)
 
 ## Installation
 
-sublime-grunt can be installed via [Sublime Package Control](https://sublime.wbond.net/). In Package Control, it is called **Grunt**. Please refer to the offical Package Control documentation to learn how to install packages.
-
-Alternatively, you can also clone the [sublime-grunt repository](https://github.com/tvooo/sublime-grunt/) into your Sublime Text packages folder.
+```
+cd ~/.config/sublime-text-3/Packages
+git clone git@github.com:glitcha/sublime-grunt.git Grunt
+```
 
 ## Usage
 
