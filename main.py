@@ -11,7 +11,7 @@ package_url = "https://github.com/tvooo/sublime-grunt"
 cache_file_name = ".sublime-grunt.cache"
 
 class GruntRunner(object):
-    def __init__(self, window, command):
+    def __init__(self, window, command = ""):
         self.window = window
         self.list_gruntfiles(command)
 
@@ -65,7 +65,7 @@ class GruntRunner(object):
 
         raise TypeError("Sha1 from grunt expose ({0}) is not equal to calculated ({1})".format(data[self.chosen_gruntfile]["sha1"], filesha1))
 
-    def list_gruntfiles(self, command):
+    def list_gruntfiles(self, command = ""):
         # Load gruntfile paths from config
         self.folders = get_grunt_file_paths()
         self.grunt_files = []
@@ -86,22 +86,20 @@ class GruntRunner(object):
         else:
             sublime.error_message("Gruntfile.js or Gruntfile.coffee not found!")
 
-    def choose_file(self, file, command):
+    def choose_file(self, file, command = ""):
         self.wd = os.path.dirname(self.grunt_files[file])
         self.chosen_gruntfile = self.grunt_files[file]
 
         self.tasks = self.list_tasks()
 
-		if command != "" : 
+        if command != "" : 
             for task_id, task in enumerate(self.tasks):
                 if (task[0] == command):
                     self.on_done(task_id)
-        else :
-        if self.tasks is not None:
-	      sublime.set_timeout(lambda:  self.window.show_quick_panel(self.tasks, self.on_done), 1)
-       if self.tasks is not None:
-            #fix quick panel unavailable
-            sublime.set_timeout(lambda:  self.window.show_quick_panel(self.tasks, self.on_done), 1)				 
+        else:
+            if self.tasks is not None:
+                #fix quick panel unavailable
+                sublime.set_timeout(lambda:  self.window.show_quick_panel(self.tasks, self.on_done), 1)              
 
     def on_done(self, task):
         if task > -1:
@@ -152,7 +150,7 @@ def get_env_with_exec_args_path():
 
 
 class GruntCommand(sublime_plugin.WindowCommand):
-    def run(self, command):
+    def run(self, command = ""):
         GruntRunner(self.window, command)
 
 class GruntKillCommand(sublime_plugin.WindowCommand):
